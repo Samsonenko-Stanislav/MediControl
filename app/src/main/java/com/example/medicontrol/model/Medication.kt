@@ -13,5 +13,6 @@ data class Medication(
     val duration: String,
     val purchasedCount: Int,
     val foodDependency: String,
-    val medicationTimes: List<String> = emptyList()
+    val medicationTimes: List<String> = emptyList(),
+    val isTaken: Boolean
 )
