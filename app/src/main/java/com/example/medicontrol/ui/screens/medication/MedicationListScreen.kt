@@ -1,4 +1,4 @@
-package com.example.medicontrol.ui
+package com.example.medicontrol.ui.screens.medication
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,13 +11,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.medicontrol.model.Medication
+import com.example.medicontrol.ui.MedicationItem
 
 @Composable
-fun MedicationsScreen(
+fun MedicationListScreen(
     medications: List<Medication>,
     onMedicationSwiped: (Medication) -> Unit,
-    onMedicationClicked: (Medication) -> Unit
+    onMedicationClicked: (Medication) -> Unit,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier

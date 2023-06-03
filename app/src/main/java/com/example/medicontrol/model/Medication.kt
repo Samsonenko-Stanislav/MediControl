@@ -2,8 +2,11 @@ package com.example.medicontrol.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.medicontrol.StringListConverter
 
 @Entity(tableName = "medications")
+@TypeConverters(StringListConverter::class)
 data class Medication(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
