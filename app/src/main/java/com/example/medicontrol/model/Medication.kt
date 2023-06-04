@@ -3,13 +3,12 @@ package com.example.medicontrol.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.example.medicontrol.StringListConverter
+import com.example.medicontrol.model.*
 
 @Entity(tableName = "medications")
-@TypeConverters(StringListConverter::class)
-
-
+@TypeConverters(DosageConverter::class, FrequencyConverter::class)
 data class Medication(
+    @PrimaryKey
     val id: Long = 0L,
     var name: String = "",
     var dosage: Dosage = Dosage(),
@@ -19,10 +18,3 @@ data class Medication(
     var quantity: Int = 0,
     var isAccepted: Boolean = false
 )
-
-
-
-
-
-
-

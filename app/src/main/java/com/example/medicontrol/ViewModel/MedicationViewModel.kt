@@ -8,6 +8,7 @@ import com.example.medicontrol.MedicationDatabase
 import com.example.medicontrol.dao.MedicationDao
 import com.example.medicontrol.model.Medication
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MedicationViewModel(application: Application) : AndroidViewModel(application) {
@@ -20,6 +21,10 @@ class MedicationViewModel(application: Application) : AndroidViewModel(applicati
 
     fun getAllMedications(): LiveData<List<Medication>> {
         return medicationDao.getAllMedications()
+    }
+
+    fun getMedication(medicationId: Long): Flow<Medication?> {
+        return medicationDao.getMedication(medicationId)
     }
 
     fun addMedication(medication: Medication) {
@@ -39,4 +44,11 @@ class MedicationViewModel(application: Application) : AndroidViewModel(applicati
             medicationDao.deleteMedication(medication)
         }
     }
+
+    fun updateMedicationStatus(medication: Medication, isAccepted: Boolean) {
+        medication.isAccepted = isAccepted
+        medicationDao.updateMedication(medication)
+
+    }
+
 }

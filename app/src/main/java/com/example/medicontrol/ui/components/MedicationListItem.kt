@@ -1,29 +1,51 @@
-package com.example.medicontrol.ui
+package com.example.medicontrol.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.medicontrol.ViewModel.MedicationViewModel
-import com.example.medicontrol.model.Medication
+import kotlinx.coroutines.flow.filter
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MedicationListItem(
-    medication: Medication,
+    medication: Int,
     navigateToMedicationDetail: (Long) -> Unit,
     viewModel: MedicationViewModel
 ) {
+    val swipeableState = rememberSwipeableState(false)
+
+    val color by animateColorAsState(
+        if (medication.isAccepted) Color.LightGray else Color.White
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { navigateToMedicationDetail(medication.id) }
+            .swipeable(
+                state = swipeableState,
+                anchors = mapOf(0f to false, 1f to true),
+                thresholds = { _, _ -> FractionalThreshold(0.5f) },
+                orientation = Orientation.Horizontal
+            )
+            .offset { IntOffset(swipeableState.offset.value.toInt(), 0) }
+            .background(color)
+            .clickable { navigateToMedicationDetail(medication.id) },
+        elevation = 4.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -35,14 +57,11 @@ fun MedicationListItem(
             Text(text = "Частота приема: ${medication.frequency}")
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Продолжительность приема: ${medication.duration} дней")
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Bottom
-        ) {
+
+            Spacer(modifier = Modifier.weight(1f))
+
             IconButton(
-                onClick = { viewModel.deleteMedication(medication) },
+                onClick = { viewModel.deleteMedication(medication) }
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
@@ -51,5 +70,15 @@ fun MedicationListItem(
                 )
             }
         }
+    }
+
+    LaunchedEffect(swipeableState) {
+        snapshotFlow { swipeableState.isAnimationRunning }
+            .filter { !it }
+            .collect {
+                if (swipeableState.currentValue) {
+                    viewModel.updateMedicationStatus(medication, !medication.isAccepted)
+                }
+            }
     }
 }

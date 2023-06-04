@@ -1,9 +1,17 @@
 package com.example.medicontrol.ui.components
 
-import androidx.compose.material.DropdownMenu
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import com.example.medicontrol.model.DosageUnit
 
 @Composable
@@ -11,6 +19,7 @@ fun DosageUnitDropdown(
     dosageUnit: DosageUnit,
     onDosageUnitChange: (DosageUnit) -> Unit
 ) {
+    var expanded by remember { mutableStateOf(false) }
     val options = listOf(
         DosageUnit.TABLETS,
         DosageUnit.CAPSULES,
@@ -20,14 +29,33 @@ fun DosageUnitDropdown(
         DosageUnit.DOSES
     )
 
-    DropdownMenu {
-        options.forEach { option ->
-            DropdownMenuItem(
-                onClick = {
-                    onDosageUnitChange(option)
-                }
+    val onDismissRequest = { expanded = false }
+
+    Box {
+        Text(
+            text = dosageUnit.toString(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            modifier = Modifier.clickable { expanded = true }
+        )
+        if (expanded) {
+            Popup(
+                alignment = Alignment.TopStart,
+                onDismissRequest = onDismissRequest,
+                properties = PopupProperties(focusable = false)
             ) {
-                Text(text = option.toString())
+                Column {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = {
+                                onDosageUnitChange(option)
+                                expanded = false
+                            }
+                        ) {
+                            Text(text = option.toString())
+                        }
+                    }
+                }
             }
         }
     }

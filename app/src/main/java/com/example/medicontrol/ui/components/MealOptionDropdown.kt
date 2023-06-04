@@ -3,7 +3,7 @@ package com.example.medicontrol.ui.components
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import com.example.medicontrol.model.MealOption
 
 @Composable
@@ -18,10 +18,16 @@ fun MealOptionDropdown(
         MealOption.INDEPENDENT_OF_MEAL
     )
 
-    DropdownMenu {
+    var expanded by remember { mutableStateOf(false) }
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false }
+    ) {
         options.forEach { option ->
             DropdownMenuItem(
                 onClick = {
+                    expanded = false
                     onMealOptionChange(option)
                 }
             ) {

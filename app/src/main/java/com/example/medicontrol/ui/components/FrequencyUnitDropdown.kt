@@ -16,7 +16,10 @@ fun FrequencyUnitDropdown(
         FrequencyUnit.TIMES_PER_WEEK
     )
 
-    DropdownMenu {
+    DropdownMenu(
+        expanded = false,
+        onDismissRequest = {}
+    ) {
         options.forEach { option ->
             DropdownMenuItem(
                 onClick = {
