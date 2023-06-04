@@ -13,6 +13,8 @@ interface MedicationDao {
     @Query("SELECT * FROM medications WHERE id = :medicationId")
     fun getMedication(medicationId: Long): Flow<Medication>
 
+    @Query("SELECT * FROM medications WHERE id = :medicationId")
+    fun getMedicationById(medicationId: Long): Flow<Medication
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMedication(medication: Medication)
 

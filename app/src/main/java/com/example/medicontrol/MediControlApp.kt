@@ -1,31 +1,41 @@
-package com.example.medicontrol
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
-import android.app.Application
-import androidx.lifecycle.LiveData
-import com.example.medicontrol.dao.MedicationDao
-import com.example.medicontrol.model.Medication
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+@Composable
+fun MediControlApp() {
+    val navController = rememberNavController()
 
-class MediControlApp : Application() {
-    private val database: MedicationDatabase by lazy { MedicationDatabase.getDatabase(this) }
-    private val medicationDao: MedicationDao by lazy { database.medicationDao() }
-
-    lateinit var medications: LiveData<List<Medication>>
-
-    override fun onCreate() {
-        super.onCreate()
-        medications = runBlocking(Dispatchers.IO) {
-            medicationDao.getAllMedications()
+    NavHost(navController, startDestination = Screen.StartScreen.route) {
+        composable(Screen.StartScreen.route) {
+            StartScreen(navController)
         }
-
-        fun initializeMedications() {
-            runBlocking {
-                withContext(Dispatchers.IO) {
-                    medications = medicationDao.getAllMedications()
-                }
-            }
+        composable(Screen.SettingsScreen.route) {
+            SettingsScreen(navController)
+        }
+        composable(Screen.MedicationListScreen.route) {
+            MedicationListScreen(navController)
+        }
+        composable(Screen.AddMedicationScreen.route) {
+            AddMedicationScreen(navController)
+        }
+        composable(Screen.EditMedicationScreen.route) { backStackEntry ->
+            val medicationId = backStackEntry.arguments?.getString("medicationId")
+            EditMedicationScreen(navController, medicationId)
+        }
+        composable(Screen.BloodPressureScreen.route) {
+            BloodPressureScreen(navController)
+        }
+        composable(Screen.GlucoseLevelScreen.route) {
+            GlucoseLevelScreen(navController)
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewMediControlApp() {
+    MediControlApp()
 }
