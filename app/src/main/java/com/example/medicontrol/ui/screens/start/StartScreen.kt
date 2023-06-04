@@ -1,4 +1,4 @@
-package com.example.medicontrol.ui.screens.medication.start
+package com.example.medicontrol.ui.screens.start
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
